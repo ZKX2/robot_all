@@ -1,0 +1,8 @@
+prefix=/home/roszkx20/robot_all/car_ws/install
+
+Name: learning_navigation
+Description: Description of learning_navigation
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,46 @@
+<launch>
+
+    <rosparam file="$(find go2_description)/config/robot_control.yaml" command="load"/>
+
+    <param name="robot_description"  command="$(find xacro)/xacro $(find go2_description)/xacro/robot.xacro" />
+
+    <node name="controller_manager" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" ns="/go2_gazebo" args="FL_hip_controller FL_thigh_controller
+                                               FL_calf_controller FR_hip_controller
+                                               FR_thigh_controller FR_calf_controller
+                                               RL_hip_controller RL_thigh_controller
+                                               RL_calf_controller RR_hip_controller
+                                               RR_thigh_controller RR_calf_controller
+                                               joint_state_controller"/>
+
+
+    <!-- <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher_rviz"/> -->
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher_rviz">
+        <param name="publish_frequency" type="double" value="1000.0"/>
+    </node>
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+        <remap from="/joint_states" to="/go2_gazebo/joint_states"/>
+    </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" respawn="false" output="screen"  args="-d $(find go2_description)/launch/check_joint.rviz"/>
+
+    <!-- 将模型添加到 Gazebo 中 -->
+    <arg name="paused" default="true"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <!-- 运行gazebo仿真环境 -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">   
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+
+    <node name="spawn_my_robot" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model go2_gazebo"/> 
+</launch>
+

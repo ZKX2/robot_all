@@ -1,0 +1,22 @@
+<launch>
+  <arg name="model" />
+  <arg name="gazebo_use" default="true"/>
+  <arg name="car_use" default="false"/>
+
+  <group if="$(arg car_use)">
+    <param name="robot_description" command=" $(find xacro)/xacro $(find xiaoqiang_udrf)/xacro/robot.xacro" />
+    <!-- 读取urdf信息(robot_description) 发布话题：/joint_states-->
+    <node name="joint_state_publisher_rviz" pkg="joint_state_publisher" type="joint_state_publisher" />
+    <!-- 发布机器人的状态 -->
+    <node name="robot_state_publisher_rviz" pkg="robot_state_publisher" type="robot_state_publisher"/> 
+  </group>
+
+  <group if="$(arg gazebo_use)">
+	  <!--运行joint_state_publisher节点，发布机器人关节状态-->
+    <param name="robot_description" command="$(find xacro)/xacro  $(find xiaoqiang_udrf)/xacro/all.xacro" />
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    <!-- 发布机器人的状态 -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/> 
+  </group>
+</launch>

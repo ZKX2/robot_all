@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<robot name="wheeltec_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find turn_on_wheeltec_robot)/urdf/xacro/wheeltec_robot_base.urdf.xacro"/>           
+    <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>                 
+    <xacro:include filename="$(find turn_on_wheeltec_robot)/urdf/xacro/IMU.xacro"/>     
+    <!-- lidar -->
+    <joint name="lidar_joint" type="fixed"> <!-- 设置joint，注意z的值，设为机器人的高度-->
+        <origin xyz="0 0 ${column_lidar_imu_z / 2 }" rpy="0 0 0" />
+        <parent link="column_lidar_imu_link" />
+        <child link="velodyne_base_link"/>
+    </joint>
+    <xacro:VLP-16/>   <!-- 调用16线雷达的宏文件-->
+
+
+
+</robot>

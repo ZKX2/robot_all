@@ -1,0 +1,445 @@
+<?xml version="1.0" ?>
+<robot name="wheeltec_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find turn_on_wheeltec_robot)/urdf/xacro/wheel_tran.xacro"/>
+    <!-- 左右两个轮子间距是0.28*2=0.56 -->
+    <!-- 前后两个轮子距离是0.6 -->
+    <!-- 定义参数 -->
+    <xacro:property name="wheel_radius" value="0.10"/>
+    <xacro:property name="wheel_length" value="0.06"/>
+    <xacro:property name="base_size_x" value="0.68"/>
+    <xacro:property name="base_size_y" value="0.46"/>
+    <xacro:property name="base_size_z" value="0.10"/>
+    <xacro:property name="base_mass" value="40.0"/>
+    <xacro:property name="wheel_mass" value="10.0"/>
+    <xacro:property name="kong" value="0.05"/> <!-- 轮子离车板间距 -->
+    <xacro:property name="front_last_l" value="0.6"/>
+    <xacro:property name="base_footprint_radius" value="0.001" />
+    <xacro:property name="earth_space" value="0.05" /> <!-- 离地间距 -->
+    <xacro:property name="base_1_mass" value="5.0"/>
+    <!-- 定义底盘 -->
+    <link name="base_footprint">
+      <visual>
+        <geometry>
+          <sphere radius="${base_footprint_radius}" />
+        </geometry>
+      </visual>
+    </link>
+
+    <!-- 定义车底座 -->
+    <link name="base_link">
+        <!-- 外观 -->
+        <visual>
+            <origin xyz="${base_size_x/2} 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${base_size_x} ${base_size_y} ${base_size_z}"/>
+            </geometry>
+            <material name="white">
+                <color rgba="1 1 1 1"/>
+            </material>
+        </visual>
+        <!-- 碰撞属性 -->
+        <collision>
+            <origin xyz="${base_size_x/2} 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${base_size_x} ${base_size_y} ${base_size_z}"/>
+            </geometry>
+        </collision>
+        <!-- 惯性属性 -->
+        <inertial>
+            <mass value="${base_mass}"/>
+            <origin xyz="${base_size_x/2} 0 0" rpy="0 0 0"/>
+            <inertia ixx="${base_mass*(base_size_z*base_size_z + base_size_x*base_size_x)/12}" ixy = "0" ixz = "0"
+                     iyy="${base_mass*(base_size_y*base_size_y + base_size_x*base_size_x)/12}" iyz= "0"
+                     izz="${base_mass*(base_size_y*base_size_y + base_size_z*base_size_z)/12}" />
+        </inertial>
+    </link>
+
+    <joint name="base_to_foot_joint" type="fixed">
+      <parent link="base_footprint" />
+      <child link="base_link" />
+      <origin xyz="${-1*base_size_x/2} 0 ${earth_space + base_size_z / 2 }" />
+    </joint>
+    
+    <link name="left_wheel_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="Red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0"/>
+            <inertia ixx="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" ixy = "0" ixz = "0"
+                iyy="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" iyz = "0"
+                izz="${wheel_mass*wheel_radius*wheel_radius/2}" />
+        </inertial>
+    </link>
+
+    <!-- 左后轮驱动 -->
+    <joint name="left_wheel_link_joint" type="continuous">
+        <origin xyz="0 ${base_size_y/2 + wheel_length/2 + kong} 0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="left_wheel_link"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <xacro:wheel_transmission name="left_wheel_link" />
+
+    <link name="right_wheel_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="Red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <inertia ixx="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" ixy = "0" ixz = "0"
+                iyy="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" iyz = "0"
+                izz="${wheel_mass*wheel_radius*wheel_radius/2}" />
+        </inertial>
+    </link>
+
+    <!-- 右后轮驱动 -->
+    <joint name="right_wheel_link_joint" type="continuous">
+        <origin xyz="0 ${-1*(base_size_y/2 + wheel_length/2 + kong)} 0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="right_wheel_link"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <xacro:wheel_transmission name="right_wheel_link" />
+
+    <xacro:property name="steering_mass" value="0.5" />
+    <xacro:property name="steer_radius" value="0.01" />
+    <xacro:property name="steer_length" value="0.005" />
+    <!-- 左前轮驱动 -->
+    <link name="left_front_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0"/>
+            <inertia ixx="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" ixy = "0" ixz = "0"
+                iyy="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" iyz = "0"
+                izz="${wheel_mass*wheel_radius*wheel_radius/2}" />
+        </inertial>
+    </link>
+
+    <!-- 前轮转向轴 (前轮的父关节)-->
+    <link name="front_steer_left_link">
+        <visual>
+            <geometry>
+                <cylinder radius="${steer_radius}" length="${steer_length}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0" />
+            <material name="black">
+                <color rgba="0.0 0.0 0.0 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${steer_radius}" length="${steer_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="-1.5707963 0.0 0.0" />
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" />
+            <mass value="${steering_mass}" />
+            <inertia ixx="${steering_mass*(3*steer_radius*steer_radius+steer_length*steer_length)/12}" ixy = "0" ixz = "0"
+                iyy="${steering_mass*(3*steer_radius*steer_radius+steer_length*steer_length)/12}" iyz = "0"
+                izz="${steering_mass*steer_radius*steer_radius/2}" />
+        </inertial>
+    </link>
+
+    <joint name="left_front_link_joint" type="continuous">
+        <parent link="front_steer_left_link"/>
+        <child link="left_front_link"/>
+        <origin rpy="0 0 0" xyz="0 ${kong} 0"/>
+        <axis xyz="0 1 0"/>
+         <limit effort="10" velocity="1000" />
+    </joint>
+
+    <joint name="front_steer_left_link_joint" type="revolute">
+      <parent link="base_link"/>
+      <child link="front_steer_left_link"/>
+      <origin rpy="0 0 0" xyz="${front_last_l} ${base_size_y/2 + wheel_length/2 } 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-0.6" upper="0.6" effort="5.0" velocity="1000.0"/>
+    </joint>
+
+    <xacro:steering_hinge_transmission name="front_steer_left_link" />
+    <xacro:wheel_transmission name="left_front_link" />
+    
+    <link name="right_front_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0 "/>
+            <inertia ixx="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" ixy = "0" ixz = "0"
+                iyy="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" iyz = "0"
+                izz="${wheel_mass*wheel_radius*wheel_radius/2}" />
+        </inertial>
+    </link>
+
+    <!-- 前轮转向轴 (前轮的父关节)-->
+    <link name="front_steer_right_link">
+        <visual>
+            <geometry>
+                <cylinder radius="${steer_radius}" length="${steer_length}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <material name="black">
+                <color rgba="0.0 0.0 0.0 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${steer_radius}" length="${steer_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="1.5707963 0.0 0.0" />
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" />
+            <mass value="${steering_mass}" />
+            <inertia ixx="${steering_mass*(3*steer_radius*steer_radius+steer_length*steer_length)/12}" ixy = "0" ixz = "0"
+                iyy="${steering_mass*(3*steer_radius*steer_radius+steer_length*steer_length)/12}" iyz = "0"
+                izz="${steering_mass*steer_radius*steer_radius/2}" />
+        </inertial>
+    </link>
+
+    <joint name="right_front_link_joint" type="continuous">
+        <parent link="front_steer_right_link"/>
+        <child link="right_front_link"/>
+        <origin rpy="0 0 0" xyz="0 ${-kong} 0"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="10" velocity="1000" />
+    </joint>
+
+    <joint name="front_steer_right_link_joint" type="revolute">
+      <parent link="base_link"/>
+      <child link="front_steer_right_link"/>
+      <origin rpy="0 0 0" xyz="${front_last_l} ${-1 *(base_size_y/2 + wheel_length/2 )}  0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-0.6" upper="0.6" effort="5.0" velocity="1000.0"/>
+    </joint>
+
+    <xacro:steering_hinge_transmission name="front_steer_right_link" />
+    <xacro:wheel_transmission name="right_front_link" />
+
+    <xacro:include filename="$(find turn_on_wheeltec_robot)/urdf/xacro/control.xacro"/>
+
+    <xacro:property name="column_radius" value="0.02"/>
+    <xacro:property name="column_length" value="0.20"/>
+    <xacro:property name="column_mass" value="1.0"/>
+    <xacro:property name="column_j" value="0.05"/>
+    <xacro:property name="column_y" value="0.65"/>
+
+    <link name="column_one">
+        <visual>
+            <geometry>
+                <cylinder radius="${column_radius}" length="${column_length}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="white">
+                <color rgba="1.0 1.0 1.0 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${column_radius}" length="${column_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" />
+            <mass value="${column_mass}" />
+            <inertia ixx="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" ixy = "0" ixz = "0"
+                iyy="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" iyz = "0"
+                izz="${column_mass*column_radius*column_radius/2}" />
+        </inertial>
+    </link>
+
+    <joint name="column_one_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="column_one"/>
+      <origin rpy="0 0 0" xyz="${column_j} ${base_size_y/2 + column_radius/2 - kong} ${column_length / 2 + base_size_z / 2} "/>
+    </joint>
+
+    <link name="column_two">
+        <visual>
+            <geometry>
+                <cylinder radius="${column_radius}" length="${column_length}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="white">
+                <color rgba="1.0 1.0 1.0 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${column_radius}" length="${column_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" />
+            <mass value="${column_mass}" />
+            <inertia ixx="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" ixy = "0" ixz = "0"
+                iyy="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" iyz = "0"
+                izz="${column_mass*column_radius*column_radius/2}" />
+        </inertial>
+    </link>
+
+    <joint name="column_two_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="column_two"/>
+      <origin rpy="0 0 0" xyz="${column_j} ${-1 *(base_size_y/2 + column_radius/2 - kong)} ${column_length / 2 + base_size_z / 2} "/>
+    </joint>
+
+    <link name="column_three">
+        <visual>
+            <geometry>
+                <cylinder radius="${column_radius}" length="${column_length}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="white">
+                <color rgba="1.0 1.0 1.0 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${column_radius}" length="${column_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" />
+            <mass value="${column_mass}" />
+            <inertia ixx="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" ixy = "0" ixz = "0"
+                iyy="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" iyz = "0"
+                izz="${column_mass*column_radius*column_radius/2}" />
+        </inertial>
+    </link>
+
+    <joint name="column_three_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="column_three"/>
+      <origin rpy="0 0 0" xyz="${column_y} ${-1 *(base_size_y/2 + column_radius/2 - kong)} ${column_length / 2 + base_size_z / 2} "/>
+    </joint>
+
+    <link name="column_four">
+        <visual>
+            <geometry>
+                <cylinder radius="${column_radius}" length="${column_length}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="white">
+                <color rgba="1.0 1.0 1.0 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${column_radius}" length="${column_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" />
+            <mass value="${column_mass}" />
+            <inertia ixx="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" ixy = "0" ixz = "0"
+                iyy="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" iyz = "0"
+                izz="${column_mass*column_radius*column_radius/2}" />
+        </inertial>
+    </link>
+
+    <joint name="column_four_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="column_four"/>
+      <origin rpy="0 0 0" xyz="${column_y} ${base_size_y/2 + column_radius/2 - kong} ${column_length / 2 + base_size_z / 2} "/>
+    </joint>
+
+        <!-- 定义车二层 -->
+    <link name="two_ply_link">
+        <!-- 外观 -->
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${base_size_x} ${base_size_y} ${base_size_z}"/>
+            </geometry>
+            <material name="white">
+                <color rgba="1 1 1 1"/>
+            </material>
+        </visual>
+        <!-- 碰撞属性 -->
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${base_size_x} ${base_size_y} ${base_size_z}"/>
+            </geometry>
+        </collision>
+        <!-- 惯性属性 -->
+        <inertial>
+            <mass value="${base_1_mass}"/>
+            <origin xyz="${base_size_x/2} 0 0" rpy="0 0 0"/>
+            <inertia ixx="${base_1_mass*(base_size_z*base_size_z + base_size_x*base_size_x)/12}" ixy = "0" ixz = "0"
+                     iyy="${base_1_mass*(base_size_y*base_size_y + base_size_x*base_size_x)/12}" iyz= "0"
+                     izz="${base_1_mass*(base_size_y*base_size_y + base_size_z*base_size_z)/12}" />
+        </inertial>
+    </link>
+
+    <joint name="two_ply_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="two_ply_link"/>
+      <origin rpy="0 0 0" xyz="${ base_size_x / 2 } 0 ${ column_length  + base_size_z / 2} "/>
+    </joint>
+
+</robot>

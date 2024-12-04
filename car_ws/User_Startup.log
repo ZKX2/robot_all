@@ -1,0 +1,170 @@
+WARNING: Package name "RGBD_camera" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[31mRLException: run_id on parameter server does not match declared run_id: a3044402-aee5-11ef-998a-05d1ae0d82a6 vs a30668fe-aee5-11ef-998a-05d1ae0d82a6[0m
+[31mThe traceback for the exception was written to the log file[0m
+... logging to /home/roszkx20/.ros/log/a30668fe-aee5-11ef-998a-05d1ae0d82a6/roslaunch-roszkx20-9032.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+]2;/home/roszkx20/robot_all/car_ws/src/turn_on_wheeltec_robot/launch/User_Startup.launch
+[1mstarted roslaunch server http://roszkx20:37349/[0m
+
+SUMMARY
+========
+
+PARAMETERS
+ * /ekf_gps/base_link_frame: base_link
+ * /ekf_gps/frequency: 50
+ * /ekf_gps/imu0: imu_correct
+ * /ekf_gps/imu0_config: [False, False, Fa...
+ * /ekf_gps/imu0_differential: False
+ * /ekf_gps/imu0_queue_size: 50
+ * /ekf_gps/imu0_remove_gravitational_acceleration: True
+ * /ekf_gps/map_frame: map
+ * /ekf_gps/odom0: odometry/gps
+ * /ekf_gps/odom0_config: [True, True, True...
+ * /ekf_gps/odom0_differential: False
+ * /ekf_gps/odom0_queue_size: 10
+ * /ekf_gps/odom_frame: odom
+ * /ekf_gps/process_noise_covariance: [1.0, 0, 0, 0, 0,...
+ * /ekf_gps/publish_tf: False
+ * /ekf_gps/sensor_timeout: 0.01
+ * /ekf_gps/two_d_mode: False
+ * /ekf_gps/world_frame: odom
+ * /gazebo/enable_ros_network: True
+ * /if_akm_yes_or_no: yes
+ * /lio_sam/Horizon_SCAN: 1800
+ * /lio_sam/N_SCAN: 16
+ * /lio_sam/baselinkFrame: base_footprint
+ * /lio_sam/downsampleRate: 1
+ * /lio_sam/edgeFeatureMinValidNum: 10
+ * /lio_sam/edgeThreshold: 1.0
+ * /lio_sam/extrinsicRPY: [1, 0, 0, 0, 1, 0...
+ * /lio_sam/extrinsicRot: [1, 0, 0, 0, 1, 0...
+ * /lio_sam/extrinsicTrans: [-0.63, 0, -0.6377]
+ * /lio_sam/globalMapVisualizationLeafSize: 1.0
+ * /lio_sam/globalMapVisualizationPoseDensity: 10.0
+ * /lio_sam/globalMapVisualizationSearchRadius: 1000.0
+ * /lio_sam/gpsCovThreshold: 2.0
+ * /lio_sam/gpsTopic: odometry/gpsz
+ * /lio_sam/historyKeyframeFitnessScore: 0.3
+ * /lio_sam/historyKeyframeSearchNum: 25
+ * /lio_sam/historyKeyframeSearchRadius: 15.0
+ * /lio_sam/historyKeyframeSearchTimeDiff: 30.0
+ * /lio_sam/imuAccBiasN: 0.000403477679784...
+ * /lio_sam/imuAccNoise: 0.010909715156015328
+ * /lio_sam/imuGravity: 9.80511
+ * /lio_sam/imuGyrBiasN: 4.415314726388959...
+ * /lio_sam/imuGyrNoise: 0.000802260695044...
+ * /lio_sam/imuRPYWeight: 0.01
+ * /lio_sam/imuTopic: imu
+ * /lio_sam/lidarFrame: velodyne
+ * /lio_sam/lidarMaxRange: 1000.0
+ * /lio_sam/lidarMinRange: 1.0
+ * /lio_sam/loopClosureEnableFlag: True
+ * /lio_sam/loopClosureFrequency: 1.0
+ * /lio_sam/mapFrame: map
+ * /lio_sam/mappingCornerLeafSize: 0.1
+ * /lio_sam/mappingProcessInterval: 0.15
+ * /lio_sam/mappingSurfLeafSize: 0.2
+ * /lio_sam/numberOfCores: 4
+ * /lio_sam/odomTopic: odometry/imu
+ * /lio_sam/odometryFrame: odom
+ * /lio_sam/odometrySurfLeafSize: 0.2
+ * /lio_sam/pointCloudTopic: velodyne_points
+ * /lio_sam/poseCovThreshold: 25.0
+ * /lio_sam/rotation_tollerance: 1000
+ * /lio_sam/savePCD: True
+ * /lio_sam/savePCDDirectory: /robot_all/car_ws...
+ * /lio_sam/sensor: velodyne
+ * /lio_sam/surfFeatureMinValidNum: 100
+ * /lio_sam/surfThreshold: 0.1
+ * /lio_sam/surroundingKeyframeDensity: 2.0
+ * /lio_sam/surroundingKeyframeSearchRadius: 50.0
+ * /lio_sam/surroundingKeyframeSize: 50
+ * /lio_sam/surroundingkeyframeAddingAngleThreshold: 0.2
+ * /lio_sam/surroundingkeyframeAddingDistThreshold: 1.0
+ * /lio_sam/useGpsElevation: False
+ * /lio_sam/useImuHeadingInitialization: False
+ * /lio_sam/z_tollerance: 1000
+ * /navsat/broadcast_utm_transform: False
+ * /navsat/broadcast_utm_transform_as_parent_frame: False
+ * /navsat/delay: 0.0
+ * /navsat/frequency: 50
+ * /navsat/magnetic_declination_radians: 0
+ * /navsat/publish_filtered_gps: False
+ * /navsat/wait_for_datum: False
+ * /navsat/yaw_offset: 0
+ * /navsat/zero_altitude: True
+ * /pointcloud_to_laserscan/angle_increment: 0.003
+ * /pointcloud_to_laserscan/angle_max: 3.1415926
+ * /pointcloud_to_laserscan/angle_min: -3.1415926
+ * /pointcloud_to_laserscan/concurrency_level: 1
+ * /pointcloud_to_laserscan/inf_epsilon: 1.0
+ * /pointcloud_to_laserscan/max_height: 0.1
+ * /pointcloud_to_laserscan/min_height: 0.0
+ * /pointcloud_to_laserscan/range_max: 100
+ * /pointcloud_to_laserscan/range_min: 0.2
+ * /pointcloud_to_laserscan/scan_time: 0.1
+ * /pointcloud_to_laserscan/target_frame: velodyne
+ * /pointcloud_to_laserscan/transform_tolerance: 0.01
+ * /pointcloud_to_laserscan/use_inf: True
+ * /robot_description: <?xml version="1....
+ * /rosdistro: noetic
+ * /rosversion: 1.17.0
+ * /use_sim_time: True
+ * /wheeltec_robot/joint_state_controller/publish_rate: 50
+ * /wheeltec_robot/joint_state_controller/type: joint_state_contr...
+ * /wheeltec_robot/left_front_wheel_velocity_controller/joint: left_front_link_j...
+ * /wheeltec_robot/left_front_wheel_velocity_controller/pid/d: 0.0
+ * /wheeltec_robot/left_front_wheel_velocity_controller/pid/i: 0.0
+ * /wheeltec_robot/left_front_wheel_velocity_controller/pid/i_clamp: 0.0
+ * /wheeltec_robot/left_front_wheel_velocity_controller/pid/p: 0.5
+ * /wheeltec_robot/left_front_wheel_velocity_controller/type: effort_controller...
+ * /wheeltec_robot/left_rear_wheel_velocity_controller/joint: left_wheel_link_j...
+ * /wheeltec_robot/left_rear_wheel_velocity_controller/pid/d: 0.0
+ * /wheeltec_robot/left_rear_wheel_velocity_controller/pid/i: 0.0
+ * /wheeltec_robot/left_rear_wheel_velocity_controller/pid/i_clamp: 0.0
+ * /wheeltec_robot/left_rear_wheel_velocity_controller/pid/p: 1
+ * /wheeltec_robot/left_rear_wheel_velocity_controller/type: effort_controller...
+ * /wheeltec_robot/left_steering_hinge_position_controller/joint: front_steer_left_...
+ * /wheeltec_robot/left_steering_hinge_position_controller/pid/d: 1.5
+ * /wheeltec_robot/left_steering_hinge_position_controller/pid/i: 0.0
+ * /wheeltec_robot/left_steering_hinge_position_controller/pid/p: 10.0
+ * /wheeltec_robot/left_steering_hinge_position_controller/type: effort_controller...
+ * /wheeltec_robot/right_front_wheel_velocity_controller/joint: right_front_link_...
+ * /wheeltec_robot/right_front_wheel_velocity_controller/pid/d: 0.0
+ * /wheeltec_robot/right_front_wheel_velocity_controller/pid/i: 0.0
+ * /wheeltec_robot/right_front_wheel_velocity_controller/pid/i_clamp: 0.0
+ * /wheeltec_robot/right_front_wheel_velocity_controller/pid/p: 0.5
+ * /wheeltec_robot/right_front_wheel_velocity_controller/type: effort_controller...
+ * /wheeltec_robot/right_rear_wheel_velocity_controller/joint: right_wheel_link_...
+ * /wheeltec_robot/right_rear_wheel_velocity_controller/pid/d: 0.0
+ * /wheeltec_robot/right_rear_wheel_velocity_controller/pid/i: 0.0
+ * /wheeltec_robot/right_rear_wheel_velocity_controller/pid/i_clamp: 0.0
+ * /wheeltec_robot/right_rear_wheel_velocity_controller/pid/p: 1
+ * /wheeltec_robot/right_rear_wheel_velocity_controller/type: effort_controller...
+ * /wheeltec_robot/right_steering_hinge_position_controller/joint: front_steer_right...
+ * /wheeltec_robot/right_steering_hinge_position_controller/pid/d: 1.5
+ * /wheeltec_robot/right_steering_hinge_position_controller/pid/i: 0.0
+ * /wheeltec_robot/right_steering_hinge_position_controller/pid/p: 10.0
+ * /wheeltec_robot/right_steering_hinge_position_controller/type: effort_controller...
+
+NODES
+  /
+    gazebo (gazebo_ros/gzserver)
+    gazebo_gui (gazebo_ros/gzclient)
+    lio_sam_featureExtraction (lio_sam/lio_sam_featureExtraction)
+    lio_sam_imageProjection (lio_sam/lio_sam_imageProjection)
+    lio_sam_imuPreintegration (lio_sam/lio_sam_imuPreintegration)
+    lio_sam_mapOptmization (lio_sam/lio_sam_mapOptmization)
+    pointcloud_to_laserscan (pointcloud_to_laserscan/pointcloud_to_laserscan_node)
+    robot_state_publisher (robot_state_publisher/robot_state_publisher)
+    robot_state_publisher_rviz (robot_state_publisher/robot_state_publisher)
+    servo_commends (turn_on_wheeltec_robot/servo_commends.py)
+    spawn_my_robot (gazebo_ros/spawn_model)
+    transform (turn_on_wheeltec_robot/transform.py)
+  /wheeltec_robot/
+    controller_manager (controller_manager/spawner)
+
+[1mROS_MASTER_URI=http://localhost:11311[0m
+]2;/home/roszkx20/robot_all/car_ws/src/turn_on_wheeltec_robot/launch/User_Startup.launch http://localhost:11311

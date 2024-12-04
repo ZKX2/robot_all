@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<robot name="xiaoqiang" xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <!-- 传动实现:用于连接控制器与关节 -->
+    <xacro:macro name="joint_trans" params="joint_name">
+        <!-- Transmission is important to link the joints and the controller -->
+        <transmission name="${joint_name}_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${joint_name}">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${joint_name}_motor">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+
+    <!-- 每一个驱动轮都需要配置传动装置 -->
+    <xacro:joint_trans joint_name="rot1" />
+    <xacro:joint_trans joint_name="rot2" />
+
+    <!-- 控制器 -->
+    <gazebo>
+        <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+            <rosDebugLevel>Debug</rosDebugLevel>
+            <publishWheelTF>false</publishWheelTF>
+            <publishOdomTF>false</publishOdomTF>
+            <robotNamespace>/</robotNamespace>
+            <publishTf>1</publishTf>
+            <publishWheelJointState>false</publishWheelJointState>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>100.0</updateRate>
+            <legacyMode>true</legacyMode>
+            <leftJoint>rot1</leftJoint> <!-- 左轮 -->
+            <rightJoint>rot2</rightJoint> <!-- 右轮 -->
+            <wheelSeparation>0.54</wheelSeparation> <!-- 车轮间距 -->
+            <wheelDiameter>0.2</wheelDiameter> <!-- 车轮直径 -->
+            <broadcastTF>1</broadcastTF>
+            <wheelTorque>30</wheelTorque>
+            <wheelAcceleration>1.8</wheelAcceleration>
+            <commandTopic>cmd_vel</commandTopic> <!-- 运动控制话题 -->
+            <odometryFrame>odom</odometryFrame> 
+            <odometryTopic>odom</odometryTopic> <!-- 里程计话题 -->
+            <robotBaseFrame>base_footprint</robotBaseFrame> <!-- 根坐标系 -->
+        </plugin>
+    </gazebo>
+
+    <gazebo reference="imu">
+            <material>Gazebo/Orange</material>
+            <gravity>true</gravity>
+            <sensor name="imu_sensor" type="imu">
+                <always_on>true</always_on>
+                <update_rate>1000</update_rate>
+                <visualize>true</visualize>
+                <topic>__default_topic__</topic>
+                <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                    <topicName>imu</topicName>
+                    <bodyName>imu</bodyName>
+                    <updateRateHZ>1000.0</updateRateHZ>
+                    <gaussianNoise>0.0</gaussianNoise>
+                    <xyzOffset>0 0 0</xyzOffset>
+                    <rpyOffset>0 0 0</rpyOffset>
+                    <frameName>imu</frameName>
+                </plugin>
+                <pose>0 0 0 0 0 0</pose>
+            </sensor>
+    </gazebo>
+
+    <!-- <gazebo reference="base_footprint">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo> -->
+    <gazebo reference="base_link">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/White</material>
+    </gazebo>
+    <gazebo reference="left_wheel_link">
+        <material>Gazebo/Black</material>
+        <mu1 value="5.0"/>
+        <mu2 value="5.0"/>
+    </gazebo>
+    <gazebo reference="right_wheel_link">
+        <material>Gazebo/Black</material>
+        <mu1 value="5.0"/>
+        <mu2 value="5.0"/>
+    </gazebo>
+    <gazebo reference="front_support_wheel">
+        <material>Gazebo/Red</material>
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+    </gazebo>
+    <gazebo reference="back_support_wheel">
+        <material>Gazebo/Red</material>
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+    </gazebo>
+    <gazebo reference="column_one">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column_two">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column_three">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column_four">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="two_ply_link">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column2_one">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column2_two">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column2_three">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column2_four">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="three_ply_link">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column3_one">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column3_two">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column3_three">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="column3_four">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    <gazebo reference="three_jxb_link">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <material>Gazebo/Black</material>
+    </gazebo>
+</robot>

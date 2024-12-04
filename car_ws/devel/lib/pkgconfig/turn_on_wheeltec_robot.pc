@@ -1,0 +1,8 @@
+prefix=/home/roszkx20/robot_all/car_ws/devel
+
+Name: turn_on_wheeltec_robot
+Description: Description of turn_on_wheeltec_robot
+Version: 0.0.0
+Cflags: -I/home/roszkx20/robot_all/car_ws/devel/include
+Libs: -L${prefix}/lib 
+Requires: 

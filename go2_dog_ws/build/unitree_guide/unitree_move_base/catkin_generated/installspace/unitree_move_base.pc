@@ -1,0 +1,8 @@
+prefix=/home/roszkx20/robot_all/go2_dog_ws/install
+
+Name: unitree_move_base
+Description: Description of unitree_move_base
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: 

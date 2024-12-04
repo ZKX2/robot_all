@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot name="xiaoqiang" xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <xacro:include filename="$(find xiaoqiang_udrf)/xacro/ct.xacro"/> 
+    <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>                 
+    <xacro:include filename="$(find xiaoqiang_udrf)/xacro/IMU.xacro"/> 
+    <xacro:include filename="$(find xiaoqiang_udrf)/xacro/gazebo.xacro"/> 
+    <xacro:include filename="$(find realsense_ros_gazebo)/xacro/depthcam.xacro"/>
+ 
+    <xacro:realsense_d435 sensor_name="d435" parent_link="two_ply_link" rate="10">
+        <origin rpy="0 0 0 " xyz="0.28 0 -0.05 "/>
+    </xacro:realsense_d435>
+    <!-- lidar -->
+    
+    <joint name="lidar_joint" type="fixed"> <!-- 设置joint，注意z的值，设为机器人的高度-->
+        <origin xyz="${lidar_x} 0 ${ base_size_two_z + base_size_z / 2 + column_length }" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="velodyne_base_link"/>
+    </joint>
+    <xacro:VLP-16/>   <!-- 调用16线雷达的宏文件-->
+</robot>
+
+
+    <!-- <joint name="lidar_joint" type="fixed"> 
+        <origin xyz="${lidar_x} 0 ${ base_size_two_z / 2 + imu_offset_z }" rpy="0 0 0" />
+        <parent link="two_ply_link" />
+        <child link="velodyne_base_link"/>
+    </joint> -->

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<robot name="xiaoqiang" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+        <xacro:property name="imu_offset_x" value="0.05" />
+        <xacro:property name="imu_offset_y" value="0.05" />
+        <xacro:property name="imu_offset_z" value="0.02" />
+        <xacro:property name="imu_m" value="0.02" /> <!-- imu质量 -->
+        
+        <link name="imu">
+            <visual>
+                <geometry>
+                    <box size="${imu_offset_x} ${imu_offset_y} ${imu_offset_z}"/>
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <material name="Red">
+                    <color rgba="1.0 0.0 0.0 1.0" />
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <box size="${imu_offset_x} ${imu_offset_y} ${imu_offset_z}"/>
+                </geometry>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" />
+                <mass value="${imu_m}" />
+                <inertia ixx="${imu_m*(imu_offset_z*imu_offset_z + imu_offset_x*imu_offset_x)/12}" ixy = "0" ixz = "0"
+                        iyy="${imu_m*(imu_offset_y*imu_offset_y + imu_offset_x*imu_offset_x)/12}" iyz= "0"
+                        izz="${imu_m*(imu_offset_y*imu_offset_y + imu_offset_z*imu_offset_z)/12}" />
+            </inertial>
+        </link>
+
+        <!-- <joint name="imu_joint" type="fixed">
+            <parent link="two_ply_link" />
+            <child link="imu" />
+            <origin xyz="${lidar_x} 0 ${ base_size_two_z / 2 + imu_offset_z / 2 }" rpy="0 0 0" />
+            <axis xyz="0 0 1" />
+        </joint> -->
+        <joint name="imu_joint" type="fixed">
+            <parent link="base_link" />
+            <child link="imu" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <axis xyz="0 0 1" />
+        </joint>
+        
+</robot>

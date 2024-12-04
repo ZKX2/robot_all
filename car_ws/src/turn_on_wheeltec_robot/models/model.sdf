@@ -1,0 +1,21 @@
+<sdf version="1.6">
+  <model name="my_map">
+    <static>true</static>
+    <link name="link">
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>5 5 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file:///home/roszkx/car_ws/src/learning_navigation/map_sys.png</uri>
+            <name>Gazebo/Grey</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
+

@@ -1,0 +1,8 @@
+prefix=/home/roszkx20/robot_all/go2_dog_ws/devel
+
+Name: unitree_legged_real
+Description: Description of unitree_legged_real
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

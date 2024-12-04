@@ -1,0 +1,72 @@
+<launch>
+  <!-- Arguments参数 -->
+  <arg name="car_mode"  default="" />
+  <arg name="if_voice" default="false"/>
+
+  <!-- 参数控制车还是仿真 -->
+  <arg name="gazebo_use" default="true"/>
+  <arg name="car_use" default="false"/>
+
+  <group if="$(arg car_use)">
+  <!--                                                                       x y z r p y 父坐标           子坐标       frequency-->
+  <node pkg="tf" type="static_transform_publisher" name="base_to_camera" args="0.59 0.00 0.228 0 0 0 base_link camera_link 100" />
+  <node pkg="tf" type="static_transform_publisher" name="base_to_gyro" args="0 0 0 0 0 0 base_link gyro_link 100" />
+
+  <param name = "robot_description" command = "$(find xacro)/xacro $(find turn_on_wheeltec_robot)/urdf/xacro/all_robot.xacro"/> 
+
+  <!-- 读取urdf信息(robot_description) 发布话题：/joint_states-->
+  <node name="joint_state_publisher_rviz" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <!-- 发布机器人的状态 -->
+  <node name="robot_state_publisher_rviz" pkg="robot_state_publisher" type="robot_state_publisher"/> 
+
+  </group>
+<!--                                 gazebo 仿真用                                   -->
+  <group if="$(arg gazebo_use)">
+    <!--模型车的起点放置位置-->
+    <arg name="x_pos" default="0"/>
+    <arg name="y_pos" default="0"/>
+    <arg name="z_pos" default="0"/>
+    <arg name="R_pos" default="0"/>
+    <arg name="P_pos" default="0"/>
+    <arg name="Y_pos" default="0"/>
+    <!-- 将模型添加到 Gazebo 中 -->
+    <arg name="paused" default="true"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <!-- 运行gazebo仿真环境 -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">   
+        <arg name="world_name" value="$(find turn_on_wheeltec_robot)/config/car_world.world"/> 
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+    <!-- URDF 标准化机器人描述格式 -->
+    <param name = "robot_description" command = "$(find xacro)/xacro $(find turn_on_wheeltec_robot)/urdf/xacro/all_robot.xacro"/> 
+
+    <node name="spawn_my_robot" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model wheeletc_robot -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -R $(arg R_pos) -P $(arg P_pos) -Y $(arg Y_pos)" /> 
+
+    <include file="$(find turn_on_wheeltec_robot)/launch/car_control.launch" ns="/"/>
+    <!-- wasd【键盘控制 -->
+    <!-- <node pkg="turn_on_wheeltec_robot" type="keyboard_teleop.py" name="keyboard_teleop" /> -->
+    
+    <!-- 设置地图的配置文件 -->
+    <!-- 运行地图服务器，并且加载设置的地图-->
+    <!-- <arg name="map" default="map_2d.yaml" />
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find learning_navigation)/map/$(arg map)"/> -->
+
+    <include file="$(find lio_sam)/launch/run.launch"/>   
+    <include file="$(find pointcloud_to_laserscan)/launch/velodyne_3d_2d.launch" />  
+    <!-- <include file="$(find octomap_server)/launch/octomap_server.launch"/>   
+    <include file="$(find learning_navigation)/launch/move_base.launch" />    -->
+    <!-- 运行rviz -->
+    <!-- <node pkg="rviz" type="rviz" name="octomap_rviz" args="-d $(find learning_navigation)/config/gmapping.rviz" /> -->
+    
+  </group>
+
+ </launch>
+
+

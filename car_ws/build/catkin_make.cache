@@ -1,0 +1,2 @@
+fdilink_ahrs:learning_navigation:lidar_align:lio_sam:octomap_mapping/octomap_mapping:octomap_mapping/octomap_server:pointcloud_to_laserscan-lunar-devel:robot_pose_ekf:rplidar_ros:turn_on_wheeltec_robot:velodyne/velodyne:velodyne/velodyne_description:velodyne/velodyne_driver:velodyne/velodyne_gazebo_plugins:velodyne/velodyne_laserscan:velodyne/velodyne_msgs:velodyne/velodyne_pcl:velodyne/velodyne_pointcloud:velodyne/velodyne_simulator
+-DCATKIN_DEVEL_PREFIX=/home/roszkx20/robot_all/car_ws/devel -DCMAKE_INSTALL_PREFIX=/home/roszkx20/robot_all/car_ws/install -G Unix Makefiles

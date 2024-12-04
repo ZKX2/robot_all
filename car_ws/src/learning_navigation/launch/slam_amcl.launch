@@ -1,0 +1,10 @@
+<launch>
+
+  <!-- 导航建图 -->
+
+    <!-- 启动SLAM节点 -->
+    <include file="$(find learning_navigation)/launch/gmapping.launch" />
+    <!-- 运行move_base节点 -->
+    <include file="$(find learning_navigation)/launch/move_base.launch" />
+
+</launch>

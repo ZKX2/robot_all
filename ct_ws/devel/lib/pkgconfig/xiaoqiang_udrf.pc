@@ -1,0 +1,8 @@
+prefix=/home/roszkx20/robot_all/ct_ws/devel
+
+Name: xiaoqiang_udrf
+Description: Description of xiaoqiang_udrf
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

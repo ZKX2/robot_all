@@ -1,0 +1,4 @@
+robot_radius: 0.4 # 机器人半径
+inflation_radius: 0.3 # 机器人与障碍物保持的最小距离
+
+

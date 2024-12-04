@@ -1,0 +1,50 @@
+<launch>
+  <!-- Arguments参数 -->
+  <arg name="car_mode"  default="top_akm_bs" />
+
+  <arg name="is_lio_slam"  default="true"/>
+  <arg name="gazebo_use" default="true"/>
+  <arg name="car_use" default="false"/>
+
+  <!--是否为akm系列车型 在语音导航功能中需要进行判断-->
+  <param name="if_akm_yes_or_no" value="yes"/>
+  <arg name="odom_frame_id"  default="odom"/>
+  <!--是否使用FDI_IMU  此处默认不使用-->
+  <arg name="use_FDI_IMU_GNSS" default="false"/>
+
+  <!-- turn on base_serial 开启底层单片机的控制节点  -->
+  <include file="$(find turn_on_wheeltec_robot)/launch/include/base_serial.launch" unless="$(arg gazebo_use)">
+    <arg name="odom_frame_id"  value="$(arg odom_frame_id)"/>
+    <arg name="use_FDI_IMU_GNSS" value="$(arg use_FDI_IMU_GNSS)"/>
+  </include>
+  
+<!-- 发布用于建图、导航的TF关系与小车外形可视化 -->
+  <include file="$(find turn_on_wheeltec_robot)/launch/robot_model_visualization.launch" >
+    <arg name="car_mode" value="$(arg car_mode)"/>
+    <arg name="gazebo_use" value="$(arg gazebo_use)" />
+    <arg name="car_use" value="$(arg car_use)" />
+  </include>
+
+<!-- 扩张卡尔曼滤波 发布odom_combined到base_footprint的TF,即小车定位 使用cartographer算法时不使用该滤波算法-->
+  <include file="$(find turn_on_wheeltec_robot)/launch/include/robot_pose_ekf.launch">
+    <arg name="is_lio_slam" value="$(arg is_lio_slam)"/>
+  </include>
+
+  <group if="$(arg car_use)">
+    <!--发布坐标系和VLP16雷达驱动-->
+    <!-- 发布坐标系 运行IMU...N100文件 -->
+    <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch"/> 
+    <include file="$(find fdilink_ahrs)/launch/use_imu.launch"/>
+    <!-- 运行lio_slam文件 -->
+    <!-- 运行点云3d-2d文件 -->
+    <!-- 运行雷达3d-2d文件 -->
+    <!-- 运行move_base节点 -->
+    <include file="$(find lio_sam)/launch/run.launch"/>   
+    <include file="$(find pointcloud_to_laserscan)/launch/velodyne_3d_2d.launch" />  
+    <!-- <include file="$(find octomap_server)/launch/octomap_server.launch"/>   -->
+    <!-- <include file="$(find learning_navigation)/launch/move_base.launch" />    -->
+  </group>
+
+ </launch>
+
+

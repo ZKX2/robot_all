@@ -1,0 +1,65 @@
+<launch>
+  <arg name="gazebo_use" default="true"/>
+  <arg name="car_use" default="false"/>
+
+  <!--加载赤兔urdf模型--> 
+  <include file="$(find xiaoqiang_udrf)/launch/get_model.launch" >
+    <arg name="gazebo_use" value="$(arg gazebo_use)" />
+    <arg name="car_use" value="$(arg car_use)" />
+  </include>
+ <!--                                 实车用                                   -->
+  <group if="$(arg car_use)">
+    <!--电机驱动-->
+    <include file="$(find xqserial_server)/launch/xqserial.launch" />
+    <!--激光雷达驱动-->
+    <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch"/>
+    <!-- 运行imu_N100文件 -->
+    <include file="$(find fdilink_ahrs)/launch/use_imu.launch"/>
+    <!-- 运行lio_slam文件 -->
+    <include file="$(find lio_sam)/launch/run.launch"/>
+    <!-- 运行雷达3d-2d文件 -->
+    <include file="$(find pointcloud_to_laserscan)/launch/velodyne_3d_2d.launch" />  
+    <!-- 运行点云3d-2d文件 -->
+    <!-- <include file="$(find octomap_server)/launch/octomap_server.launch"/>   -->
+  </group>
+
+  <!--                                 gazebo 仿真用                                   -->
+  <group if="$(arg gazebo_use)">
+    <!--模型车的起点放置位置-->
+    <arg name="x_pos" default="0"/>
+    <arg name="y_pos" default="0"/>
+    <arg name="z_pos" default="0"/>
+    <arg name="R_pos" default="0"/>
+    <arg name="P_pos" default="0"/>
+    <arg name="Y_pos" default="0"/>
+    <!-- 将模型添加到 Gazebo 中 -->
+    <arg name="paused" default="true"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <!-- 运行gazebo仿真环境 -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">   
+        <arg name="world_name" value="$(find robot_bringup)/config/car_world.world"/> 
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+
+    <node name="spawn_my_robot" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model xiaoqiang -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -R $(arg R_pos) -P $(arg P_pos) -Y $(arg Y_pos)" /> 
+
+    <include file="$(find lio_sam)/launch/run.launch"/>   
+    <include file="$(find pointcloud_to_laserscan)/launch/velodyne_3d_2d.launch" />  
+
+  </group>
+
+  
+  <!-- 运行EKF功能包融合数据-->
+  <!--  <include file="$(find robot_pose_ekf)/robot_pose_ekf.launch" />
+    <include file="$(find robot_pose_ekf)/odom_ekf.launch" />
+  -->
+  <!--rviz可视化-->
+  <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find robot_bringup)/config/xq_robot.rviz"/> -->
+</launch>

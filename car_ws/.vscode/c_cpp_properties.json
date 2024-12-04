@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/roszkx20/car_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/roszkx20/car_ws/src/turn_on_wheeltec_robot/include/**",
+        "/home/roszkx20/car_ws/src/velodyne/**",
+        "/home/roszkx20/car_ws/src/learning_navigation/**",
+        "/home/roszkx20/car_ws/src/lio_sam/**",
+        "/home/roszkx20/car_ws/src/fdilink_ahrs/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

@@ -1,0 +1,687 @@
+<?xml version="1.0"?>
+<robot name="xiaoqiang" xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <xacro:property name="lidar_x" value="0.20"/>
+    <xacro:property name="base_footprint_radius" value="0.001" />
+    <xacro:property name="earth_space" value="0.05" /> <!-- 离地间距 -->
+    <xacro:property name="base_size_x" value="0.54"/>
+    <xacro:property name="base_size_y" value="0.48"/>
+    <xacro:property name="base_size_z" value="0.26"/>
+    <xacro:property name="base_mass" value="40.0"/>
+    <xacro:property name="wheel_mass" value="10.0"/>
+    <xacro:property name="wheel_radius" value="0.1"/>
+    <xacro:property name="wheel_length" value="0.06"/>
+    <!-- 定义底盘 -->
+    <link name="base_footprint">
+      <visual>
+        <geometry>
+          <sphere radius="${base_footprint_radius}" />
+        </geometry>
+      </visual>
+    </link>
+    <!-- 定义车底座 -->
+    <link name="base_link">
+        <!-- 外观 -->
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${base_size_x} ${base_size_y} ${base_size_z}"/>
+            </geometry>
+            <material name="white">
+                <color rgba="1 1 1 1"/>
+            </material>
+        </visual>
+        <!-- 碰撞属性 -->
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${base_size_x} ${base_size_y} ${base_size_z}"/>
+            </geometry>
+        </collision>
+        <!-- 惯性属性 -->
+        <inertial>
+            <mass value="${base_mass}"/>
+            <origin xyz="${base_size_x/2} 0 0" rpy="0 0 0"/>
+            <inertia ixx="${base_mass*(base_size_z*base_size_z + base_size_x*base_size_x)/12}" ixy = "0" ixz = "0"
+                     iyy="${base_mass*(base_size_y*base_size_y + base_size_x*base_size_x)/12}" iyz= "0"
+                     izz="${base_mass*(base_size_y*base_size_y + base_size_z*base_size_z)/12}" />
+        </inertial>
+    </link>
+
+    <joint name="base_to_foot_joint" type="fixed">
+      <parent link="base_footprint" />
+      <child link="base_link" />
+      <origin xyz="0 0 ${earth_space + base_size_z / 2 }" />
+    </joint>
+
+    <link name="left_wheel_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="Black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="-1.5707963 0 0"/>
+            <inertia ixx="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" ixy = "0" ixz = "0"
+                iyy="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" iyz = "0"
+                izz="${wheel_mass*wheel_radius*wheel_radius/2}" />
+        </inertial>
+    </link>
+
+    <!-- 左后轮驱动 -->
+    <joint name="rot1" type="continuous">
+        <origin xyz="0 ${base_size_y/2 + wheel_length/2} ${ -1 * base_size_z /2 + wheel_radius/2}" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="left_wheel_link"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <link name="right_wheel_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+            <material name="Black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${wheel_mass}"/>
+            <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+            <inertia ixx="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" ixy = "0" ixz = "0"
+                iyy="${wheel_mass*(3*wheel_radius*wheel_radius+wheel_length*wheel_length)/12}" iyz = "0"
+                izz="${wheel_mass*wheel_radius*wheel_radius/2}" />
+        </inertial>
+    </link>
+
+    <!-- 右后轮驱动 -->
+    <joint name="rot2" type="continuous">
+        <origin xyz="0 ${-1*(base_size_y/2 + wheel_length/2)} ${ -1 * base_size_z /2 + wheel_radius/2}" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="right_wheel_link"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+  <xacro:property name="support_wheel_radius" value="0.025" />
+  <xacro:property name="support_wheel_mass" value="10.0" />
+  <xacro:property name="support_wheel_x" value="0.22" />
+  <link name="front_support_wheel">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+            <sphere radius="${support_wheel_radius}" />
+        </geometry>
+        <material name="Red">
+            <color rgba="1 0 0 1"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+            <sphere radius="${support_wheel_radius}" />
+        </geometry>
+    </collision>
+    <inertial>
+        <mass value="${support_wheel_mass}"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <inertia ixx="${2*support_wheel_mass*support_wheel_radius*support_wheel_radius/5}" ixy="0" ixz="0"
+            iyy="${2*support_wheel_mass*support_wheel_radius*support_wheel_radius/5}" iyz="0" 
+            izz="${2*support_wheel_mass*support_wheel_radius*support_wheel_radius/5}" />
+    </inertial>
+  </link>
+  <joint name="rot3" type="continuous">
+    <origin xyz="${support_wheel_x} 0 ${-1 * (base_size_z /2 + support_wheel_radius)}" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="front_support_wheel" />
+    <axis xyz="1 1 1" />
+  </joint>
+
+  <link name="back_support_wheel">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+            <sphere radius="${support_wheel_radius}" />
+        </geometry>
+        <material name="Red">
+            <color rgba="1 0 0 1"/>
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+            <sphere radius="${support_wheel_radius}" />
+        </geometry>
+    </collision>
+    <inertial>
+        <mass value="${support_wheel_mass}"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <inertia ixx="${2*support_wheel_mass*support_wheel_radius*support_wheel_radius/5}" ixy="0" ixz="0"
+            iyy="${2*support_wheel_mass*support_wheel_radius*support_wheel_radius/5}" iyz="0" 
+            izz="${2*support_wheel_mass*support_wheel_radius*support_wheel_radius/5}" />
+    </inertial>
+  </link>
+  <joint name="rot4" type="continuous">
+    <origin xyz="${-support_wheel_x} 0 ${-1 * (base_size_z /2 + support_wheel_radius)}" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="back_support_wheel" />
+    <axis xyz="1 1 1" />
+  </joint>
+
+  <xacro:property name="column_radius" value="0.02"/>
+  <xacro:property name="column_length" value="0.25"/>
+  <xacro:property name="column_mass" value="3.0"/>
+  <xacro:property name="column_x" value="0.20"/>
+  <xacro:property name="column_y" value="0.05"/>
+  <link name="column_one">
+      <visual>
+          <geometry>
+              <cylinder radius="${column_radius}" length="${column_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1.0" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column_radius}" length="${column_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column_mass}" />
+          <inertia ixx="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" iyz = "0"
+              izz="${column_mass*column_radius*column_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column_one_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="column_one"/>
+    <origin rpy="0 0 0" xyz="${column_x} ${base_size_y/2 + column_radius/2 - column_y} ${column_length / 2 + base_size_z / 2} "/>
+  </joint>
+
+  <link name="column_two">
+      <visual>
+          <geometry>
+              <cylinder radius="${column_radius}" length="${column_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1.0" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column_radius}" length="${column_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column_mass}" />
+          <inertia ixx="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" iyz = "0"
+              izz="${column_mass*column_radius*column_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column_two_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="column_two"/>
+    <origin rpy="0 0 0" xyz="${column_x} ${-1 *base_size_y/2 - column_radius/2 + column_y} ${column_length / 2 + base_size_z / 2} "/>
+  </joint>
+
+
+  <link name="column_three">
+      <visual>
+          <geometry>
+              <cylinder radius="${column_radius}" length="${column_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1.0" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column_radius}" length="${column_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column_mass}" />
+          <inertia ixx="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" iyz = "0"
+              izz="${column_mass*column_radius*column_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column_three_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="column_three"/>
+    <origin rpy="0 0 0" xyz="${-1 *column_x} ${-1 *base_size_y/2 - column_radius/2 + column_y} ${column_length / 2 + base_size_z / 2} "/>
+  </joint>
+
+  <link name="column_four">
+      <visual>
+          <geometry>
+              <cylinder radius="${column_radius}" length="${column_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1.0" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column_radius}" length="${column_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column_mass}" />
+          <inertia ixx="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column_mass*(3*column_radius*column_radius+column_length*column_length)/12}" iyz = "0"
+              izz="${column_mass*column_radius*column_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column_four_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="column_four"/>
+    <origin rpy="0 0 0" xyz="${-1 *column_x} ${base_size_y/2 + column_radius/2 - column_y} ${column_length / 2 + base_size_z / 2} "/>
+  </joint>
+
+  <xacro:property name="base_size_two_z" value="0.02"/>
+  <xacro:property name="base_1_mass" value="2.0"/>
+      <!-- 定义车二层 -->
+  <link name="two_ply_link">
+      <!-- 外观 -->
+      <visual>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+              <box size="${base_size_x} ${base_size_y} ${base_size_two_z}"/>
+          </geometry>
+          <material name="black">
+              <color rgba="0 0 0 1"/>
+          </material>
+      </visual>
+      <!-- 碰撞属性 -->
+      <collision>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+              <box size="${base_size_x} ${base_size_y} ${base_size_two_z}"/>
+          </geometry>
+      </collision>
+      <!-- 惯性属性 -->
+      <inertial>
+          <mass value="${base_1_mass}"/>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <inertia ixx="${base_1_mass*(base_size_two_z*base_size_two_z + base_size_x*base_size_x)/12}" ixy = "0" ixz = "0"
+                    iyy="${base_1_mass*(base_size_y*base_size_y + base_size_x*base_size_x)/12}" iyz= "0"
+                    izz="${base_1_mass*(base_size_y*base_size_y + base_size_two_z*base_size_two_z)/12}" />
+      </inertial>
+  </link>
+
+  <joint name="two_ply_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="two_ply_link"/>
+    <origin rpy="0 0 0" xyz="0 0 ${ column_length  + base_size_two_z / 2 + base_size_z / 2} "/>
+  </joint>
+
+  <xacro:property name="column2_radius" value="0.01"/>
+  <xacro:property name="column2_length" value="0.20"/>
+  <xacro:property name="column2_mass" value="1.0"/>
+  <xacro:property name="column2_x1" value="0.25"/>
+  <xacro:property name="column2_x2" value="0.02"/>
+  <xacro:property name="column2_y" value="0.04"/>
+
+  <link name="column2_one">
+      <visual>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column2_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column2_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column2_mass}" />
+          <inertia ixx="${column2_mass*(3*column2_radius*column2_radius+column2_length*column2_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column2_mass*(3*column2_radius*column2_radius+column2_length*column2_length)/12}" iyz = "0"
+              izz="${column2_mass*column2_radius*column2_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column2_one_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="column2_one"/>
+    <origin rpy="0 0 0" xyz="${-1 *column2_x1} ${base_size_y/2 + column2_radius/2 - column2_y} ${column2_length / 2 + base_size_two_z / 2} "/>
+  </joint>
+
+  <link name="column2_two">
+      <visual>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column2_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column2_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column2_mass}" />
+          <inertia ixx="${column2_mass*(3*column2_radius*column2_radius+column2_length*column2_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column2_mass*(3*column2_radius*column2_radius+column2_length*column2_length)/12}" iyz = "0"
+              izz="${column2_mass*column2_radius*column2_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column2_two_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="column2_two"/>
+    <origin rpy="0 0 0" xyz="${-1 *column2_x1} ${ -1 * base_size_y/2 - column2_radius/2 + column2_y} ${column2_length / 2 + base_size_two_z / 2} "/>
+  </joint>
+
+  <link name="column2_three">
+      <visual>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column2_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column2_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column2_mass}" />
+          <inertia ixx="${column2_mass*(3*column2_radius*column2_radius+column2_length*column2_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column2_mass*(3*column2_radius*column2_radius+column2_length*column2_length)/12}" iyz = "0"
+              izz="${column2_mass*column2_radius*column2_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column2_three_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="column2_three"/>
+    <origin rpy="0 0 0" xyz="${column2_x2} ${base_size_y/2 + column2_radius/2 - column2_y} ${column2_length / 2 + base_size_two_z / 2} "/>
+  </joint>
+
+  <link name="column2_four">
+      <visual>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column2_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column2_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column2_mass}" />
+          <inertia ixx="${column2_mass*(3*column2_radius*column2_radius+column2_length*column2_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column2_mass*(3*column2_radius*column2_radius+column2_length*column2_length)/12}" iyz = "0"
+              izz="${column2_mass*column2_radius*column2_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column2_four_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="column2_four"/>
+    <origin rpy="0 0 0" xyz="${column2_x2} ${-1 *base_size_y/2 - column2_radius/2 + column2_y} ${column2_length / 2 + base_size_two_z / 2} "/>
+  </joint>
+
+  <xacro:property name="base_size_three_x" value="0.32"/>
+
+  <!-- 定义车三层 -->
+  <link name="three_ply_link">
+      <!-- 外观 -->
+      <visual>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+              <box size="${base_size_three_x} ${base_size_y} ${base_size_two_z}"/>
+          </geometry>
+          <material name="black">
+              <color rgba="0 0 0 1"/>
+          </material>
+      </visual>
+      <!-- 碰撞属性 -->
+      <collision>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+              <box size="${base_size_three_x} ${base_size_y} ${base_size_two_z}"/>
+          </geometry>
+      </collision>
+      <!-- 惯性属性 -->
+      <inertial>
+          <mass value="${base_1_mass}"/>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <inertia ixx="${base_1_mass*(base_size_two_z*base_size_two_z + base_size_three_x*base_size_three_x)/12}" ixy = "0" ixz = "0"
+                    iyy="${base_1_mass*(base_size_y*base_size_y + base_size_three_x*base_size_three_x)/12}" iyz= "0"
+                    izz="${base_1_mass*(base_size_y*base_size_y + base_size_two_z*base_size_two_z)/12}" />
+      </inertial>
+  </link>
+
+  <joint name="three_ply_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="three_ply_link"/>
+    <origin rpy="0 0 0" xyz="${base_size_three_x /2 - base_size_x /2} 0 ${ column2_length  + base_size_two_z } "/>
+  </joint>
+
+  <xacro:property name="column3_length" value="0.10"/>
+  <xacro:property name="column3_x1" value="0.04"/>
+  <xacro:property name="column3_x2" value="0.24"/>
+  <xacro:property name="column3_y" value="0.04"/>
+
+  <link name="column3_one">
+      <visual>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column3_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column3_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column2_mass}" />
+          <inertia ixx="${column2_mass*(3*column2_radius*column2_radius+column3_length*column3_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column2_mass*(3*column2_radius*column2_radius+column3_length*column3_length)/12}" iyz = "0"
+              izz="${column2_mass*column2_radius*column2_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column3_one_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="column3_one"/>
+    <origin rpy="0 0 0" xyz="${column3_x1} ${ base_size_y/2 + column2_radius/2 - column3_y} ${column3_length / 2 + base_size_two_z / 2} "/>
+  </joint>
+
+  <link name="column3_two">
+      <visual>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column3_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column3_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column2_mass}" />
+          <inertia ixx="${column2_mass*(3*column2_radius*column2_radius+column3_length*column3_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column2_mass*(3*column2_radius*column2_radius+column3_length*column3_length)/12}" iyz = "0"
+              izz="${column2_mass*column2_radius*column2_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column3_two_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="column3_two"/>
+    <origin rpy="0 0 0" xyz="${column3_x1} ${ -1 * base_size_y/2 - column2_radius/2 + column3_y} ${column3_length / 2 + base_size_two_z / 2} "/>
+  </joint>
+
+  <link name="column3_three">
+      <visual>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column3_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column3_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column2_mass}" />
+          <inertia ixx="${column2_mass*(3*column2_radius*column2_radius+column3_length*column3_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column2_mass*(3*column2_radius*column2_radius+column3_length*column3_length)/12}" iyz = "0"
+              izz="${column2_mass*column2_radius*column2_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column3_three_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="column3_three"/>
+    <origin rpy="0 0 0" xyz="${column3_x2} ${ base_size_y/2 + column2_radius/2 - column3_y} ${column3_length / 2 + base_size_two_z / 2} "/>
+  </joint>
+
+  <link name="column3_four">
+      <visual>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column3_length}" />
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <material name="black">
+              <color rgba="0 0 0 1" />
+          </material>
+      </visual>
+      <collision>
+          <geometry>
+              <cylinder radius="${column2_radius}" length="${column3_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+      </collision>
+      <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="${column2_mass}" />
+          <inertia ixx="${column2_mass*(3*column2_radius*column2_radius+column3_length*column3_length)/12}" ixy = "0" ixz = "0"
+              iyy="${column2_mass*(3*column2_radius*column2_radius+column3_length*column3_length)/12}" iyz = "0"
+              izz="${column2_mass*column2_radius*column2_radius/2}" />
+      </inertial>
+  </link>
+
+  <joint name="column3_four_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="column3_four"/>
+    <origin rpy="0 0 0" xyz="${column3_x2} ${ -1 * base_size_y/2 - column2_radius/2 + column3_y} ${column3_length / 2 + base_size_two_z / 2} "/>
+  </joint>
+
+  <xacro:property name="base_size_jxb_x" value="0.24"/>
+  <!-- 定义车三2层 -->
+  <link name="three_jxb_link">
+      <!-- 外观 -->
+      <visual>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+              <box size="${base_size_jxb_x} ${base_size_y} ${base_size_two_z}"/>
+          </geometry>
+          <material name="black">
+              <color rgba="0 0 0 1"/>
+          </material>
+      </visual>
+      <!-- 碰撞属性 -->
+      <collision>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+              <box size="${base_size_jxb_x} ${base_size_y} ${base_size_two_z}"/>
+          </geometry>
+      </collision>
+      <!-- 惯性属性 -->
+      <inertial>
+          <mass value="${base_1_mass}"/>
+          <origin xyz="${base_size_jxb_x/2} 0 0" rpy="0 0 0"/>
+          <inertia ixx="${base_1_mass*(base_size_two_z*base_size_two_z + base_size_jxb_x*base_size_jxb_x)/12}" ixy = "0" ixz = "0"
+                    iyy="${base_1_mass*(base_size_y*base_size_y + base_size_jxb_x*base_size_jxb_x)/12}" iyz= "0"
+                    izz="${base_1_mass*(base_size_y*base_size_y + base_size_two_z*base_size_two_z)/12}" />
+      </inertial>
+  </link>
+  <joint name="three_jxb_joint" type="fixed">
+    <parent link="two_ply_link"/>
+    <child link="three_jxb_link"/>
+    <origin rpy="0 0 0" xyz="${base_size_x /2 - base_size_jxb_x /2 } 0 ${ column3_length  + base_size_two_z } "/>
+  </joint>
+
+</robot>

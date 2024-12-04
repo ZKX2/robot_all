@@ -1,0 +1,60 @@
+DWAPlannerROS:
+  # max_vel_trans: 5.0  
+  # min_vel_trans: 0.01    
+  # max_vel_x: 5.0         #maximum linear speed 
+  # min_vel_x: -5.0        #minimum linear speed
+  # max_vel_y: 5.0
+  # min_vel_y: -5.0
+  # max_rot_vel: 15.0  # 最大角速度 (rad/s)
+  # min_rot_vel: -15.0 # 最小角速度 (rad/s)
+  # # max_theta_vel: 20       #maximum rotate speed
+  # # min_theta_vel: -20.0      #minimum rotate speed 
+  # acc_lim_x: 5.0         #maximum linear acceleration in x 
+  # acc_lim_y: 5.0 
+  # acc_lim_theta: 5.0     #maximum rotational acceleration 
+  # acc_lim_trans: 5.0     
+  max_vel_x: 10.0  # 最大线速度 (m/s)
+  min_vel_x: -10.0  # 最小线速度 (m/s)
+  max_vel_theta: 20.0  # 最大角速度 (rad/s)
+  min_vel_theta: -20.0  # 最小角速度 (rad/s)
+  acc_lim_x: 8.0  # 最大加速度
+  acc_lim_theta: 15.0  # 最大角加速度
+  max_theta_vel: 10.0        #maximum rotate speed
+  min_theta_vel: -10.0      #minimum rotate speed 
+  min_turning_radius: 0.23  # 最小转弯半径 (m)
+
+  prune_plan: true       #whether to clear the trajectory 1m behind it
+  holonomic_robot: false
+  xy_goal_tolerance: 0.25               
+  yaw_goal_tolerance: 0.25
+  trans_stopped_vel: 0.1                
+  theta_stopped_vel: 0.1
+  latch_xy_goal_tolerance: false       #设置为true,如果到达容错距离内,机器人就会原地旋转,即使转动是会跑出容错距离外.
+  
+  #Forward Simulation Parameters
+  sim_time: 1.5                        #simluation time  1.2
+  sim_granularity: 0.02                #resolution of the simulation in meters 0.02
+  angular_sim_granularity: 0.025       #smaller values result in a finer granularity
+  vx_samples: 20                       #number of samples to use when exploring the forward velocities space
+  vy_samples: 0                        #number of samples to use when exploring the sideways velocities space
+  vth_samples: 40                      #number of samples to use when exploring the angular velocities space
+  controller_frequency: 10             #controller frequency in Hz
+
+  #Trajectory Scoring Parameters
+  path_distance_bias: 32.0             #weight for the path distance cost function
+  goal_distance_bias: 10.0             #weight for the goal distance cost function
+  occdist_scale: 0.30                  #scaling factor for the maximum distance from an obstacle allowed for the robot to be considered in collision. The value should typically be between 0 and 1. A lower value will make the robot more conservative in terms of collision avoidance.#0.02  #定义控制器躲避障碍物的程度
+  forward_point_distance: 0.325          #the distance threshold to create a new point in meters 0.325
+  stop_time_buffer: 0.2                #the buffer time to prevent robot from rotating between forward and backward in seconds
+  scaling_speed: 0.25                  #the scaling factor for the robot's velocity
+  max_scaling_factor: 0.2              #the maximum scaling factor for the robot's velocity
+
+  #Oscillation Prevention Parameters
+  oscillation_reset_dist: 0.05         
+  oscillation_reset_angle: 0.2
+
+  use_dwa: true
+  restore_defaults: true
+
+
+
